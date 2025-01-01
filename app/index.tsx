@@ -1,10 +1,10 @@
-import { StyleSheet, View, Text, Pressable, Animated } from 'react-native';
+import { StyleSheet, View, Text, Pressable, Animated, Platform } from 'react-native';
 import { useState, useEffect, useRef } from 'react';
 import { Audio } from 'expo-av';
 import * as Haptics from 'expo-haptics';
 
 // Sound reference
-const soundObject = new Audio.Sound();
+let soundObject: Audio.Sound | null = null;
 
 // Colors for different modes
 const colors = {
@@ -20,7 +20,7 @@ const colors = {
   }
 };
 
-export default function Index() {
+function Index() {
   const WORK_TIME = 20; // 20 seconds for testing
   const BREAK_TIME = 10; // 10 seconds for testing
 
@@ -34,24 +34,32 @@ export default function Index() {
 
   // Load sound effect
   useEffect(() => {
-    const loadSound = async () => {
+    const initSound = async () => {
       try {
+        soundObject = new Audio.Sound();
         await soundObject.loadAsync(require('../assets/timer-end.mp3'));
       } catch (error) {
         console.log('Error loading sound', error);
       }
     };
-    loadSound();
+
+    initSound();
+
     return () => {
-      soundObject.unloadAsync();
+      if (soundObject) {
+        soundObject.unloadAsync();
+        soundObject = null;
+      }
     };
   }, []);
 
   // Play sound and vibrate when timer ends
   const playTimerEndEffects = async () => {
     try {
-      await soundObject.replayAsync();
-      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      if (soundObject) {
+        await soundObject.replayAsync();
+      }
+      await Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
     } catch (error) {
       console.log('Error playing sound', error);
     }
@@ -173,6 +181,8 @@ export default function Index() {
     </View>
   );
 }
+
+export default Index;
 
 const styles = StyleSheet.create({
   container: {
