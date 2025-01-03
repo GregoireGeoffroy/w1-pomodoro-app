@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState } from 'react';
+import { useColorScheme } from 'react-native';
 
 const DEV_MODE = true;
 
@@ -7,6 +8,7 @@ interface TimerSettings {
   workDuration: number;
   breakDuration: number;
   longBreakDuration: number;
+  pomosUntilLongBreak: number;
   
   // Auto Start Options
   autoStartPomodoro: boolean;
@@ -26,9 +28,10 @@ interface TimerSettings {
 
 const DEFAULT_SETTINGS: TimerSettings = {
   // Durations
-  workDuration: DEV_MODE ? 20/60 : 25,
-  breakDuration: DEV_MODE ? 10/60 : 5,
-  longBreakDuration: DEV_MODE ? 15/60 : 15,
+  workDuration: DEV_MODE ? 5/60 : 25,
+  breakDuration: DEV_MODE ? 2/60 : 5,
+  longBreakDuration: DEV_MODE ? 3/60 : 15,
+  pomosUntilLongBreak: 4,
   
   // Auto Start Options
   autoStartPomodoro: false,
@@ -41,7 +44,7 @@ const DEFAULT_SETTINGS: TimerSettings = {
   
   // Haptic Settings
   vibrationEnabled: true,
-  vibrationDuration: 10,
+  vibrationDuration: 10000, // 10 seconds in milliseconds
   
   soundChoice: 'bell',
 };
@@ -50,25 +53,30 @@ const TimerContext = createContext<{
   settings: TimerSettings;
   updateSettings: (key: string, value: any) => void;
   resetToDefaults: () => void;
+  isDark: boolean;
 }>({
   settings: DEFAULT_SETTINGS,
   updateSettings: () => {},
   resetToDefaults: () => {},
+  isDark: false,
 });
 
-export function TimerProvider({ children }: { children: React.ReactNode }) {
+export function TimerProvider({ children }: { children: React.ReactNode }): JSX.Element {
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
-  const updateSettings = (key: string, value: any) => {
-    setSettings(prev => ({ ...prev, [key]: value }));
-  };
-
-  const resetToDefaults = () => {
-    setSettings(DEFAULT_SETTINGS);
+  const contextValue = {
+    settings,
+    updateSettings: (key: string, value: any) => {
+      setSettings(prev => ({ ...prev, [key]: value }));
+    },
+    resetToDefaults: () => setSettings(DEFAULT_SETTINGS),
+    isDark,
   };
 
   return (
-    <TimerContext.Provider value={{ settings, updateSettings, resetToDefaults }}>
+    <TimerContext.Provider value={contextValue}>
       {children}
     </TimerContext.Provider>
   );

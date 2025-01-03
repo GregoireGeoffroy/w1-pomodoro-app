@@ -1,23 +1,32 @@
 import { Tabs } from 'expo-router';
-import { FontAwesome } from '@expo/vector-icons';
+import { useColorScheme } from 'react-native';
+import { TimerIcon, SettingsIcon } from '@/components/icons';
 
 export default function TabLayout() {
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
+
   return (
-    <Tabs>
+    <Tabs
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: isDark ? '#fff' : '#000',
+        tabBarStyle: {
+          backgroundColor: isDark ? '#1F2937' : '#fff',
+        },
+      }}>
       <Tabs.Screen
         name="index"
         options={{
           title: 'Timer',
-          tabBarIcon: ({ color }) => <FontAwesome name="clock-o" size={24} color={color} />,
-          headerShown: false,
+          tabBarIcon: ({ color }) => <TimerIcon color={color} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: 'Settings',
-          tabBarIcon: ({ color }) => <FontAwesome name="gear" size={24} color={color} />,
-          headerShown: false,
+          tabBarIcon: ({ color }) => <SettingsIcon color={color} />,
         }}
       />
     </Tabs>
