@@ -1,1 +1,1 @@
-import GoogleIcon from '@/components/icons/GoogleIcon'; 
+// Delete this file as we'll use the one in src/assets/icons 
