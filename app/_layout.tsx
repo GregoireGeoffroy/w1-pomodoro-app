@@ -3,24 +3,46 @@ import { TimerProvider } from '@/context/TimerContext';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useColorScheme } from 'react-native';
 import '../global.css';
+import { StatisticsProvider } from '@/context/StatisticsContext';
+import { AuthProvider, useAuth } from '@/context/AuthContext';
+import LoadingScreen from '@/components/LoadingScreen';
+
+function RootLayoutNav() {
+  const { isLoading, session } = useAuth();
+  const colorScheme = useColorScheme();
+
+  if (isLoading) {
+    return <LoadingScreen />;
+  }
+
+  return (
+    <Stack
+      screenOptions={{
+        headerShown: false,
+        contentStyle: {
+          backgroundColor: colorScheme === 'dark' ? '#1F2937' : 'white',
+        },
+      }}
+    >
+      {session ? (
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      ) : (
+        <Stack.Screen name="auth" options={{ headerShown: false }} />
+      )}
+    </Stack>
+  );
+}
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  
   return (
-    <SafeAreaProvider>
-      <TimerProvider>
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: {
-              backgroundColor: colorScheme === 'dark' ? '#1F2937' : 'white',
-            },
-          }}
-        >
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        </Stack>
-      </TimerProvider>
-    </SafeAreaProvider>
+    <AuthProvider>
+      <SafeAreaProvider>
+        <TimerProvider>
+          <StatisticsProvider>
+            <RootLayoutNav />
+          </StatisticsProvider>
+        </TimerProvider>
+      </SafeAreaProvider>
+    </AuthProvider>
   );
 }

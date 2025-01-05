@@ -8,6 +8,7 @@ import { useTimerMode } from '@/hooks/useTimerMode';
 import { useHaptics } from '@/hooks/useHaptics';
 import { useAudioManager } from '@/hooks/useAudioManager';
 import { THEME_COLORS } from '@/constants';
+import { useStatistics } from '@/context/StatisticsContext'
 
 function formatTime(seconds: number): string {
   const minutes = Math.floor(seconds / 60);
@@ -20,6 +21,7 @@ export default function TimerScreen() {
   const { mode, toggleMode } = useTimerMode();
   const { sounds } = useAudioManager();
   const { vibrate } = useHaptics();
+  const { addCompletedPomodoro } = useStatistics()
 
   const [isRunning, setIsRunning] = useState(false);
   const [timeLeft, setTimeLeft] = useState(settings.workDuration * 60);
@@ -53,6 +55,7 @@ export default function TimerScreen() {
     if (mode === 'work') {
       setSessions(prev => prev + 1);
       setCompletedPomos(prev => prev + 1);
+      addCompletedPomodoro(settings.workDuration)
     }
 
     // Calculate next duration before mode switch
@@ -105,7 +108,8 @@ export default function TimerScreen() {
     toggleMode, 
     sounds, 
     vibrate, 
-    getBreakDuration
+    getBreakDuration,
+    addCompletedPomodoro
   ]);
 
   // Timer logic

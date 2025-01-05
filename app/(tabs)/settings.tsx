@@ -1,9 +1,13 @@
 import { Switch } from 'react-native';
 import Slider from '@react-native-community/slider';
-import { View, Text, ScrollView, Pressable } from 'react-native';
+import { View, Text, ScrollView, Pressable, TouchableOpacity } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTimerSettings } from '@/context/TimerContext';
+import { useAuth } from '@/context/AuthContext';
+import { signInWithGoogle } from '@/utils/supabase';
+import { useRouter } from 'expo-router';
+import GoogleIcon from '@/assets/icons/GoogleIcon';
 
 interface DurationSettingProps {
   label: string;
@@ -58,6 +62,8 @@ function ToggleSetting({ label, value, onValueChange }: {
 
 export default function SettingsScreen() {
   const { settings, updateSettings, resetToDefaults } = useTimerSettings();
+  const { user, signOut } = useAuth();
+  const router = useRouter();
   
   return (
     <BlurView intensity={100} tint="light" className="flex-1">
@@ -121,7 +127,7 @@ export default function SettingsScreen() {
               <Text className="text-lg font-semibold mb-3 dark:text-white">Auto Start</Text>
               <View className="space-y-4">
                 <ToggleSetting
-                  label="Auto Start Pomo"
+                  label="Auto Start  Pomo"
                   value={settings.autoStartPomodoro}
                   onValueChange={(value) => updateSettings('autoStartPomodoro', value)}
                 />
@@ -187,6 +193,43 @@ export default function SettingsScreen() {
           </View>
         </ScrollView>
       </SafeAreaView>
+      
+      <View className="mt-8 px-4">
+        <Text className="text-lg font-semibold mb-4 dark:text-white">
+          Account
+        </Text>
+        
+        {user ? (
+          <View className="space-y-4">
+            <Text className="text-gray-600 dark:text-gray-300">
+              Signed in as: {user.email}
+            </Text>
+            <TouchableOpacity
+              className="bg-red-500 py-2 px-4 rounded-lg"
+              onPress={signOut}
+            >
+              <Text className="text-white text-center">Sign Out</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View className="space-y-4">
+            <TouchableOpacity
+              className="bg-blue-500 py-2 px-4 rounded-lg"
+              onPress={() => router.push('/auth/login')}
+            >
+              <Text className="text-white text-center">Sign In</Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              className="bg-white border border-gray-300 py-2 px-4 rounded-lg flex-row items-center justify-center space-x-2"
+              onPress={signInWithGoogle}
+            >
+              <GoogleIcon />
+              <Text className="text-gray-800">Continue with Google</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      </View>
     </BlurView>
   );
 } 
