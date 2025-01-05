@@ -34,14 +34,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <Ionicons name="settings-outline" size={28} color={color} />,
         }}
       />
-      {/* Remove or comment out the premium tab
       <Tabs.Screen
-        name="premium"
+        name="account"
         options={{
-          title: 'Premium',
-          tabBarIcon: ({ color }) => <Ionicons name="star-outline" size={28} color={color} />,
+          title: 'Account',
+          tabBarIcon: ({ color }) => <Ionicons name="person-outline" size={28} color={color} />,
         }}
-      /> */}
+      />
     </Tabs>
   );
 } 
