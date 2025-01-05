@@ -195,7 +195,7 @@ export default function TimerScreen() {
           />
         </View>
 
-        <View className="flex-row space-x-4 mt-8">
+        <View className="flex-row space-x-4 mt-8 gap-4">
           <Pressable
             onPress={() => setIsRunning(!isRunning)}
             style={({ pressed }) => ({
@@ -207,7 +207,7 @@ export default function TimerScreen() {
               elevation: 4,
             })}
           >
-            <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>
+            <Text style={{ color: colors.text, fontSize: 18, fontWeight: '600' }}>
               {isRunning ? 'Pause' : 'Start'}
             </Text>
           </Pressable>
