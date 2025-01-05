@@ -121,7 +121,7 @@ export default function SettingsScreen() {
               <Text className="text-lg font-semibold mb-3 dark:text-white">Auto Start</Text>
               <View className="space-y-4">
                 <ToggleSetting
-                  label="Auto Start Next Pomo"
+                  label="Auto Start Pomo"
                   value={settings.autoStartPomodoro}
                   onValueChange={(value) => updateSettings('autoStartPomodoro', value)}
                 />
