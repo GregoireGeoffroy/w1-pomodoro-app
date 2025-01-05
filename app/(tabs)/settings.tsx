@@ -8,6 +8,8 @@ import { useAuth } from '@/context/AuthContext';
 import { signInWithGoogle } from '@/utils/supabase';
 import { useRouter } from 'expo-router';
 import GoogleIcon from '@/assets/icons/GoogleIcon';
+import { ThemeSelector } from '@/components/ThemeSelector';
+import { useThemeColors } from '@/hooks/useThemeColors';
 
 interface DurationSettingProps {
   label: string;
@@ -64,12 +66,21 @@ export default function SettingsScreen() {
   const { settings, updateSettings, resetToDefaults } = useTimerSettings();
   const { user, signOut } = useAuth();
   const router = useRouter();
+  const colors = useThemeColors();
   
   return (
     <BlurView intensity={100} tint="light" className="flex-1">
       <SafeAreaView className="flex-1">
-        <ScrollView className="flex-1 p-6">
-          <Text className="text-2xl font-bold mb-6 dark:text-white">Timer Settings</Text>
+        <ScrollView 
+          className="flex-1 p-6"
+          style={{ backgroundColor: colors.background }}
+        >
+          <Text 
+            className="text-2xl font-bold mb-6"
+            style={{ color: colors.text }}
+          >
+            Timer Settings
+          </Text>
           
           <View className="space-y-6">
             <DurationSetting
@@ -189,6 +200,16 @@ export default function SettingsScreen() {
                   Reset to Defaults
                 </Text>
               </Pressable>
+            </View>
+
+            <View className="mt-6">
+              <Text 
+                className="text-lg font-semibold px-4 mb-2"
+                style={{ color: colors.text }}
+              >
+                Theme
+              </Text>
+              <ThemeSelector />
             </View>
           </View>
         </ScrollView>

@@ -9,6 +9,7 @@ import { useHaptics } from '@/hooks/useHaptics';
 import { useAudioManager } from '@/hooks/useAudioManager';
 import { THEME_COLORS } from '@/constants';
 import { useStatistics } from '@/context/StatisticsContext'
+import { useThemeColors } from '@/hooks/useThemeColors';
 
 function formatTime(seconds: number): string {
   const minutes = Math.floor(seconds / 60);
@@ -22,6 +23,7 @@ export default function TimerScreen() {
   const { sounds } = useAudioManager();
   const { vibrate } = useHaptics();
   const { addCompletedPomodoro } = useStatistics()
+  const colors = useThemeColors();
 
   const [isRunning, setIsRunning] = useState(false);
   const [timeLeft, setTimeLeft] = useState(settings.workDuration * 60);
@@ -29,19 +31,20 @@ export default function TimerScreen() {
   const [sessions, setSessions] = useState(0);
   const [completedPomos, setCompletedPomos] = useState(0);
 
-  const timerColor = mode === 'work' ? 
-    THEME_COLORS.work : 
-    THEME_COLORS.break;
-
-  // Helper function to determine if it's time for a long break
   const shouldTakeLongBreak = useCallback(() => {
     return completedPomos > 0 && completedPomos % settings.pomosUntilLongBreak === 0;
   }, [completedPomos, settings.pomosUntilLongBreak]);
 
-  // Helper to get current break duration
   const getBreakDuration = useCallback(() => {
     return shouldTakeLongBreak() ? settings.longBreakDuration : settings.breakDuration;
   }, [shouldTakeLongBreak, settings.longBreakDuration, settings.breakDuration]);
+
+  const getTimerColor = useCallback(() => {
+    if (mode === 'work') return colors.work;
+    return shouldTakeLongBreak() ? colors.longBreak : colors.break;
+  }, [mode, colors, shouldTakeLongBreak]);
+
+  const timerColor = getTimerColor();
 
   // Handle timer completion and mode switching
   const handleTimerComplete = useCallback(() => {
@@ -170,10 +173,15 @@ export default function TimerScreen() {
   }
 
   return (
-    <BlurView intensity={100} tint="light" className="flex-1">
-      <SafeAreaView className="flex-1 items-center justify-center bg-white/30 dark:bg-gray-900/30">
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <SafeAreaView className="flex-1 items-center justify-center">
         <View className="items-center space-y-4">
-          <Text className="text-3xl font-bold mb-2 dark:text-white">
+          <Text style={{ 
+            fontSize: 30, 
+            fontWeight: 'bold', 
+            marginBottom: 8,
+            color: colors.text 
+          }}>
             {mode === 'work' ? 'Focus' : 
               (shouldTakeLongBreak() ? 'Long Break' : 'Short Break')}
           </Text>
@@ -190,27 +198,39 @@ export default function TimerScreen() {
         <View className="flex-row space-x-4 mt-8">
           <Pressable
             onPress={() => setIsRunning(!isRunning)}
-            className={`
-              px-8 py-4 rounded-full shadow-lg
-              ${isRunning ? 'bg-red-500 active:bg-red-600' : 'bg-blue-500 active:bg-blue-600'}
-            `}
-            style={{ elevation: 4 }}
+            style={({ pressed }) => ({
+              backgroundColor: isRunning ? colors.work : colors.accent,
+              opacity: pressed ? 0.8 : 1,
+              paddingHorizontal: 32,
+              paddingVertical: 16,
+              borderRadius: 9999,
+              elevation: 4,
+            })}
           >
-            <Text className="text-white text-lg font-semibold">
+            <Text style={{ color: 'white', fontSize: 18, fontWeight: '600' }}>
               {isRunning ? 'Pause' : 'Start'}
             </Text>
           </Pressable>
 
           <Pressable
             onPress={() => {
-              setTimeLeft(mode === 'work' ? settings.workDuration * 60 : settings.breakDuration * 60);
+              setTimeLeft(mode === 'work' ? 
+                settings.workDuration * 60 : 
+                getBreakDuration() * 60
+              );
               setProgress(0);
               setIsRunning(false);
             }}
-            className="px-8 py-4 bg-yellow-500 active:bg-yellow-600 rounded-full shadow-lg"
-            style={{ elevation: 4 }}
+            style={({ pressed }) => ({
+              backgroundColor: colors.surface,
+              opacity: pressed ? 0.8 : 1,
+              paddingHorizontal: 32,
+              paddingVertical: 16,
+              borderRadius: 9999,
+              elevation: 4,
+            })}
           >
-            <Text className="text-white text-lg font-semibold">
+            <Text style={{ color: colors.text, fontSize: 18, fontWeight: '600' }}>
               Reset
             </Text>
           </Pressable>
@@ -220,21 +240,27 @@ export default function TimerScreen() {
               toggleMode();
               setIsRunning(false);
             }}
-            className="px-8 py-4 bg-gray-500 active:bg-gray-600 rounded-full shadow-lg"
-            style={{ elevation: 4 }}
+            style={({ pressed }) => ({
+              backgroundColor: colors.surface,
+              opacity: pressed ? 0.8 : 1,
+              paddingHorizontal: 32,
+              paddingVertical: 16,
+              borderRadius: 9999,
+              elevation: 4,
+            })}
           >
-            <Text className="text-white text-lg font-semibold">
+            <Text style={{ color: colors.text, fontSize: 18, fontWeight: '600' }}>
               Skip
             </Text>
           </Pressable>
         </View>
 
         <View className="mt-8 items-center">
-          <Text className="text-base text-gray-600 dark:text-gray-300">
+          <Text style={{ fontSize: 16, color: colors.text }}>
             Today: {sessions} Pomos - {formatTotalFocusTime(sessions, settings.workDuration)}
           </Text>
         </View>
       </SafeAreaView>
-    </BlurView>
+    </View>
   );
 } 

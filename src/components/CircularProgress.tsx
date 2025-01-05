@@ -1,42 +1,68 @@
 import React from 'react';
-import CircularProgressIndicator from 'react-native-circular-progress-indicator';
-import { useColorScheme } from 'react-native';
+import { View, Text } from 'react-native';
+import Svg, { Circle } from 'react-native-svg';
+import { useThemeColors } from '@/hooks/useThemeColors';
 
 interface CircularProgressProps {
   progress: number;
   time: string;
   color: string;
   size?: number;
+  strokeWidth?: number;
 }
 
-export function CircularProgress({ 
-  progress, 
-  time, 
-  color, 
-  size = 300 
+export function CircularProgress({
+  progress,
+  time,
+  color,
+  size = 280,
+  strokeWidth = 12,
 }: CircularProgressProps) {
-  const colorScheme = useColorScheme();
-  const isDark = colorScheme === 'dark';
+  const colors = useThemeColors();
+  const center = size / 2;
+  const radius = (size - strokeWidth) / 2;
+  const circumference = 2 * Math.PI * radius;
+  const progressStroke = ((100 - progress) / 100) * circumference;
 
   return (
-    <CircularProgressIndicator
-      value={progress}
-      radius={size / 2}
-      duration={800}
-      progressValueColor={isDark ? '#fff' : '#000'}
-      activeStrokeColor={color}
-      inActiveStrokeColor={isDark ? '#374151' : '#E5E7EB'}
-      inActiveStrokeOpacity={0.3}
-      activeStrokeWidth={15}
-      inActiveStrokeWidth={15}
-      title={time}
-      titleColor={isDark ? '#fff' : '#000'}
-      titleStyle={{ 
-        fontSize: 48,
-        fontWeight: '700',
-      }}
-      showProgressValue={false}
-    />
+    <View className="items-center justify-center">
+      <Svg width={size} height={size}>
+        {/* Background circle */}
+        <Circle
+          cx={center}
+          cy={center}
+          r={radius}
+          stroke={colors.surface}
+          strokeWidth={strokeWidth}
+          fill="transparent"
+        />
+        {/* Progress circle */}
+        <Circle
+          cx={center}
+          cy={center}
+          r={radius}
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeDasharray={`${circumference} ${circumference}`}
+          strokeDashoffset={progressStroke}
+          strokeLinecap="round"
+          fill="transparent"
+          transform={`rotate(-90 ${center} ${center})`}
+        />
+      </Svg>
+      <View className="absolute">
+        <Text
+          style={{
+            fontSize: 48,
+            fontWeight: 'bold',
+            color: colors.text,
+            textAlign: 'center',
+          }}
+        >
+          {time}
+        </Text>
+      </View>
+    </View>
   );
 }
 
