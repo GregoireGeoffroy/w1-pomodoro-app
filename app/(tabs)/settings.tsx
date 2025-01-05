@@ -67,12 +67,11 @@ export default function SettingsScreen() {
   const colors = useThemeColors();
   
   return (
-    <BlurView intensity={100} tint="light" className="flex-1">
+    <View style={{ flex: 1, backgroundColor: colors.background }}> 
       <SafeAreaView className="flex-1">
         <ScrollView 
           className="flex-1 p-6"
-          style={{ backgroundColor: colors.background }}
-        >
+          style={{ backgroundColor: colors.background }}>
           <Text 
             className="text-2xl font-bold mb-6"
             style={{ color: colors.text }}
@@ -212,6 +211,6 @@ export default function SettingsScreen() {
           </View>
         </ScrollView>
       </SafeAreaView>
-    </BlurView>
+    </View>
   );
 } 

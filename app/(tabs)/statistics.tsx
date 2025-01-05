@@ -6,10 +6,12 @@ import { useStatistics } from '@/context/StatisticsContext'
 import { useState, useEffect } from 'react'
 import { useAuth } from '@/context/AuthContext'
 import { router } from 'expo-router'
+import { useThemeColors } from '@/hooks/useThemeColors'
 
 export default function Statistics() {
   const { colorScheme } = useColorScheme()
   const { statistics } = useStatistics()
+  const colors = useThemeColors()
   const screenWidth = Dimensions.get('window').width
   const [timeframe, setTimeframe] = useState<'week' | 'month'>('week')
   const { session } = useAuth()
@@ -69,136 +71,139 @@ export default function Statistics() {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
-      <ScrollView className="flex-1 px-4">
-        <View className="py-4">
-          <Text className="text-2xl font-bold text-gray-900 dark:text-white">
-            Statistics
-          </Text>
-        </View>
-
-        {/* Time Period Selector */}
-        <View className="flex-row space-x-2 mb-4">
-          <Pressable
-            onPress={() => setTimeframe('week')}
-            className={`px-4 py-2 rounded-full ${
-              timeframe === 'week' ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-700'
-            }`}
-          >
-            <Text className={`${
-              timeframe === 'week' ? 'text-white' : 'text-gray-600 dark:text-gray-300'
-            }`}>
-              Week
+    <View style={{ flex: 1, backgroundColor: colors.background }}>
+      <SafeAreaView className="flex-1">
+        <ScrollView className="flex-1 px-4">
+          <View className="py-4">
+            <Text className="text-2xl font-bold text-gray-900 dark:text-white">
+              Statistics
             </Text>
-          </Pressable>
-          <Pressable
-            onPress={() => setTimeframe('month')}
-            className={`px-4 py-2 rounded-full ${
-              timeframe === 'month' ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-700'
-            }`}
-          >
-            <Text className={`${
-              timeframe === 'month' ? 'text-white' : 'text-gray-600 dark:text-gray-300'
-            }`}>
-              Month
-            </Text>
-          </Pressable>
-        </View>
+          </View>
 
-        {/* Period Summary */}
-        <View className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 mb-4">
-          <Text className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            {timeframe === 'week' ? 'This Week' : 'This Month'}
-          </Text>
-          <View className="flex-row justify-between">
-            <View className="items-center">
-              <Text className="text-2xl font-bold text-blue-500">
-                {totalPomodoros}
+          {/* Time Period Selector */}
+          <View className="flex-row space-x-2 mb-4">
+            <Pressable
+              onPress={() => setTimeframe('week')}
+              className={`px-4 py-2 rounded-full ${
+                timeframe === 'week' ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-700'
+              }`}
+            >
+              <Text className={`${
+                timeframe === 'week' ? 'text-white' : 'text-gray-600 dark:text-gray-300'
+              }`}>
+                Week
               </Text>
-              <Text className="text-sm text-gray-600 dark:text-gray-400">
-                Total Pomos
+            </Pressable>
+            <Pressable
+              onPress={() => setTimeframe('month')}
+              className={`px-4 py-2 rounded-full ${
+                timeframe === 'month' ? 'bg-blue-500' : 'bg-gray-200 dark:bg-gray-700'
+              }`}
+            >
+              <Text className={`${
+                timeframe === 'month' ? 'text-white' : 'text-gray-600 dark:text-gray-300'
+              }`}>
+                Month
               </Text>
-            </View>
-            <View className="items-center">
-              <Text className="text-2xl font-bold text-blue-500">
-                {Math.round(totalFocusTime / 60 * 10) / 10}h
-              </Text>
-              <Text className="text-sm text-gray-600 dark:text-gray-400">
-                Focus Time
-              </Text>
-            </View>
-            <View className="items-center">
-              <Text className="text-2xl font-bold text-blue-500">
-                {averagePomodoros}
-              </Text>
-              <Text className="text-sm text-gray-600 dark:text-gray-400">
-                Daily Avg
-              </Text>
+            </Pressable>
+          </View>
+
+          {/* Period Summary */}
+          <View className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 mb-4">
+            <Text className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              {timeframe === 'week' ? 'This Week' : 'This Month'}
+            </Text>
+            <View className="flex-row justify-between">
+              <View className="items-center">
+                <Text className="text-2xl font-bold text-blue-500">
+                  {totalPomodoros}
+                </Text>
+                <Text className="text-sm text-gray-600 dark:text-gray-400">
+                  Total Pomos
+                </Text>
+              </View>
+              <View className="items-center">
+                <Text className="text-2xl font-bold text-blue-500">
+                  {Math.round(totalFocusTime / 60 * 10) / 10}h
+                </Text>
+                <Text className="text-sm text-gray-600 dark:text-gray-400">
+                  Focus Time
+                </Text>
+              </View>
+              <View className="items-center">
+                <Text className="text-2xl font-bold text-blue-500">
+                  {averagePomodoros}
+                </Text>
+                <Text className="text-sm text-gray-600 dark:text-gray-400">
+                  Daily Avg
+                </Text>
+              </View>
             </View>
           </View>
-        </View>
 
-        {/* Pomodoro Chart */}
-        <View className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 mb-4">
-          <Text className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            Completed Pomodoros
-          </Text>
-          <LineChart
-            data={chartData}
-            width={screenWidth - 48}
-            height={220}
-            chartConfig={{
-              backgroundColor: colorScheme === 'dark' ? '#1f2937' : '#f9fafb',
-              backgroundGradientFrom: colorScheme === 'dark' ? '#1f2937' : '#f9fafb',
-              backgroundGradientTo: colorScheme === 'dark' ? '#1f2937' : '#f9fafb',
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(59, 130, 246, ${opacity})`,
-              labelColor: (opacity = 1) => 
-                colorScheme === 'dark' ? 
-                  `rgba(255, 255, 255, ${opacity})` : 
-                  `rgba(0, 0, 0, ${opacity})`,
-              propsForDots: {
-                r: "4",
-                strokeWidth: "2",
-                stroke: "#3b82f6"
-              }
-            }}
-            bezier
-            style={{
-              marginVertical: 8,
-              borderRadius: 16
-            }}
-          />
-        </View>
+          {/* Pomodoro Chart */}
+          <View className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 mb-4">
+            <Text className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Completed Pomodoros
+            </Text>
+            <LineChart
+              data={chartData}
+              width={screenWidth - 48}
+              height={220}
+              chartConfig={{
+                backgroundColor: colorScheme === 'dark' ? '#1f2937' : '#f9fafb',
+                backgroundGradientFrom: colorScheme === 'dark' ? '#1f2937' : '#f9fafb',
+                backgroundGradientTo: colorScheme === 'dark' ? '#1f2937' : '#f9fafb',
+                decimalPlaces: 0,
+                color: (opacity = 1) => `rgba(59, 130, 246, ${opacity})`,
+                labelColor: (opacity = 1) => 
+                  colorScheme === 'dark' ? 
+                    `rgba(255, 255, 255, ${opacity})` : 
+                    `rgba(0, 0, 0, ${opacity})`,
+                propsForDots: {
+                  r: "4",
+                  strokeWidth: "2",
+                  stroke: "#3b82f6"
+                }
+              }}
+              bezier
+              style={{
+                marginVertical: 8,
+                borderRadius: 16
+              }}
+            />
+          </View>
 
-        {/* Focus Time Chart */}
-        <View className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 mb-4">
-          <Text className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-            Focus Time (hours)
-          </Text>
-          <BarChart
-            data={focusTimeData}
-            width={screenWidth - 48}
-            height={220}
-            yAxisSuffix="h"
-            chartConfig={{
-              backgroundColor: colorScheme === 'dark' ? '#1f2937' : '#f9fafb',
-              backgroundGradientFrom: colorScheme === 'dark' ? '#1f2937' : '#f9fafb',
-              backgroundGradientTo: colorScheme === 'dark' ? '#1f2937' : '#f9fafb',
-              decimalPlaces: 1,
-              color: (opacity = 1) => `rgba(59, 130, 246, ${opacity})`,
-              labelColor: (opacity = 1) => 
-                colorScheme === 'dark' ? 
-                  `rgba(255, 255, 255, ${opacity})` : 
-                  `rgba(0, 0, 0, ${opacity})`,
-            }}
-            style={{
-              marginVertical: 8,
-              borderRadius: 16
-            }}
-          />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+          {/* Focus Time Chart */}
+          <View className="bg-gray-50 dark:bg-gray-800 rounded-xl p-4 mb-4">
+            <Text className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Focus Time (hours)
+            </Text>
+            <BarChart
+              data={focusTimeData}
+              width={screenWidth - 48}
+              height={220}
+              yAxisSuffix="h"
+              yAxisLabel=""
+              chartConfig={{
+                backgroundColor: colorScheme === 'dark' ? '#1f2937' : '#f9fafb',
+                backgroundGradientFrom: colorScheme === 'dark' ? '#1f2937' : '#f9fafb',
+                backgroundGradientTo: colorScheme === 'dark' ? '#1f2937' : '#f9fafb',
+                decimalPlaces: 1,
+                color: (opacity = 1) => `rgba(59, 130, 246, ${opacity})`,
+                labelColor: (opacity = 1) => 
+                  colorScheme === 'dark' ? 
+                    `rgba(255, 255, 255, ${opacity})` : 
+                    `rgba(0, 0, 0, ${opacity})`,
+              }}
+              style={{
+                marginVertical: 8,
+                borderRadius: 16
+              }}
+            />
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </View>
   )
 } 
