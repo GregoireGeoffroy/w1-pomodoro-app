@@ -6,6 +6,7 @@ import '../global.css';
 import { StatisticsProvider } from '@/context/StatisticsContext';
 import { AuthProvider, useAuth } from '@/context/AuthContext';
 import LoadingScreen from '@/components/LoadingScreen';
+import { PurchasesProvider } from '@/context/PurchasesContext';
 
 function RootLayoutNav() {
   const { isLoading, session } = useAuth();
@@ -39,7 +40,9 @@ export default function RootLayout() {
       <SafeAreaProvider>
         <TimerProvider>
           <StatisticsProvider>
-            <RootLayoutNav />
+            <PurchasesProvider>
+              <RootLayoutNav />
+            </PurchasesProvider>
           </StatisticsProvider>
         </TimerProvider>
       </SafeAreaProvider>

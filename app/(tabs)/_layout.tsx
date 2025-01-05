@@ -13,11 +13,11 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: colorScheme === 'dark' ? '#1f2937' : '#fff',
         },
+        headerShown: false,
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Timer',
           tabBarIcon: ({ color }) => (
             <FontAwesome name="clock-o" size={24} color={color} />
           ),
@@ -26,7 +26,6 @@ export default function TabLayout() {
       <Tabs.Screen
         name="statistics"
         options={{
-          title: 'Stats',
           tabBarIcon: ({ color }) => (
             <FontAwesome name="bar-chart" size={24} color={color} />
           ),
@@ -35,9 +34,16 @@ export default function TabLayout() {
       <Tabs.Screen
         name="settings"
         options={{
-          title: 'Settings',
           tabBarIcon: ({ color }) => (
             <FontAwesome name="gear" size={24} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="premium"
+        options={{
+          tabBarIcon: ({ color }) => (
+            <FontAwesome name="star" size={24} color={color} />
           ),
         }}
       />
