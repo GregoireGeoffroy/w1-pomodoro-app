@@ -1,52 +1,47 @@
 import { Tabs } from 'expo-router';
-import { useColorScheme } from 'nativewind';
-import { FontAwesome } from '@expo/vector-icons';
+import { useColorScheme } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TabLayout() {
-  const { colorScheme } = useColorScheme();
+  const colorScheme = useColorScheme();
 
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: colorScheme === 'dark' ? '#fff' : '#000',
-        tabBarInactiveTintColor: colorScheme === 'dark' ? '#666' : '#999',
         tabBarStyle: {
-          backgroundColor: colorScheme === 'dark' ? '#1f2937' : '#fff',
+          backgroundColor: colorScheme === 'dark' ? '#1F2937' : '#fff',
         },
-        headerShown: false,
       }}>
       <Tabs.Screen
         name="index"
         options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome name="clock-o" size={24} color={color} />
-          ),
+          title: 'Timer',
+          tabBarIcon: ({ color }) => <Ionicons name="timer-outline" size={28} color={color} />,
         }}
       />
       <Tabs.Screen
         name="statistics"
         options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome name="bar-chart" size={24} color={color} />
-          ),
+          title: 'Statistics',
+          tabBarIcon: ({ color }) => <Ionicons name="stats-chart-outline" size={28} color={color} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome name="gear" size={24} color={color} />
-          ),
+          title: 'Settings',
+          tabBarIcon: ({ color }) => <Ionicons name="settings-outline" size={28} color={color} />,
         }}
       />
+      {/* Remove or comment out the premium tab
       <Tabs.Screen
         name="premium"
         options={{
-          tabBarIcon: ({ color }) => (
-            <FontAwesome name="star" size={24} color={color} />
-          ),
+          title: 'Premium',
+          tabBarIcon: ({ color }) => <Ionicons name="star-outline" size={28} color={color} />,
         }}
-      />
+      /> */}
     </Tabs>
   );
 } 
