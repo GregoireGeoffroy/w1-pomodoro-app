@@ -62,7 +62,7 @@ export const getCurrentUser = async () => {
   return { user, error };
 };
 
-// Update the Google sign in function for better OAuth handling
+// Update the Google sign in function
 export const signInWithGoogle = async () => {
   try {
     const { data, error } = await supabase.auth.signInWithOAuth({
@@ -83,8 +83,8 @@ export const signInWithGoogle = async () => {
 
       if (result.type === 'success') {
         // The user was successfully logged in
-        const { session } = await supabase.auth.getSession();
-        if (!session) {
+        const { data: sessionData } = await supabase.auth.getSession();
+        if (!sessionData.session) {
           throw new Error('No session after successful login');
         }
         return { error: null };
@@ -115,17 +115,16 @@ export const signInWithApple = async () => {
     const { data, error } = await supabase.auth.signInWithIdToken({
       provider: 'apple',
       token: credential.identityToken,
-      nonce: credential.nonce, // Add this line for better security
     });
 
     if (error) throw error;
     return { data, error: null };
-  } catch (error) {
-    if (error.code === 'ERR_CANCELED') {
+  } catch (error: unknown) {
+    if (error instanceof Error && 'code' in error && error.code === 'ERR_CANCELED') {
       // User canceled the sign-in flow
       return { error: new Error('Sign in canceled') };
     }
     console.error('Apple sign in error:', error);
-    return { error };
+    return { error: error instanceof Error ? error : new Error('Unknown error occurred') };
   }
 };
