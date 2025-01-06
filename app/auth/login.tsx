@@ -1,12 +1,25 @@
-import { View, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Platform, Alert, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { router } from 'expo-router';
+import { signInWithGoogle, signInWithApple } from '@/utils/supabase';
+import GoogleIcon from '@/assets/icons/GoogleIcon';
+import * as AppleAuthentication from 'expo-apple-authentication';
+
+const handleAuthError = (error: Error, provider: string) => {
+  Alert.alert(
+    'Authentication Error',
+    `Failed to sign in with ${provider}: ${error.message}`,
+    [{ text: 'OK' }]
+  );
+};
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
+  const [isAppleLoading, setIsAppleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { signIn } = useAuth();
 
@@ -69,6 +82,54 @@ export default function LoginScreen() {
             </Text>
           </TouchableOpacity>
 
+          <View className="flex-row items-center my-4">
+            <View className="flex-1 h-px bg-gray-300 dark:bg-gray-700" />
+            <Text className="mx-4 text-gray-500">or continue with</Text>
+            <View className="flex-1 h-px bg-gray-300 dark:bg-gray-700" />
+          </View>
+
+          <TouchableOpacity
+            className="w-full h-12 rounded-lg border border-gray-300 dark:border-gray-700 flex-row items-center justify-center space-x-2 bg-white dark:bg-gray-800"
+            onPress={async () => {
+              setIsGoogleLoading(true);
+              try {
+                const { error } = await signInWithGoogle();
+                if (error) throw error;
+              } catch (error) {
+                handleAuthError(error as Error, 'Google');
+              } finally {
+                setIsGoogleLoading(false);
+              }
+            }}
+            disabled={isGoogleLoading}
+          >
+            <GoogleIcon />
+            <Text className="text-gray-800 dark:text-white">
+              {isGoogleLoading ? 'Signing in...' : 'Continue with Google'}
+            </Text>
+          </TouchableOpacity>
+
+          {Platform.OS === 'ios' && (
+            <AppleAuthentication.AppleAuthenticationButton
+              buttonType={AppleAuthentication.AppleAuthenticationButtonType.SIGN_IN}
+              buttonStyle={AppleAuthentication.AppleAuthenticationButtonStyle.BLACK}
+              cornerRadius={5}
+              style={{ height: 44, width: '100%' }}
+              onPress={async () => {
+                setIsAppleLoading(true);
+                try {
+                  const { error } = await signInWithApple();
+                  if (error) throw error;
+                } catch (error) {
+                  handleAuthError(error as Error, 'Apple');
+                } finally {
+                  setIsAppleLoading(false);
+                }
+              }}
+              disabled={isAppleLoading}
+            />
+          )}
+
           <TouchableOpacity
             onPress={() => router.push('/auth/register')}
             className="mt-4"
@@ -79,6 +140,12 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
       </View>
+
+      {(isLoading || isGoogleLoading || isAppleLoading) && (
+        <View className="absolute inset-0 bg-black/20 items-center justify-center">
+          <ActivityIndicator size="large" color="#3B82F6" />
+        </View>
+      )}
     </View>
   );
 } 

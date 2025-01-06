@@ -2,7 +2,7 @@ import 'react-native-url-polyfill/auto';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
 import * as WebBrowser from 'expo-web-browser';
-import { makeRedirectUri } from 'expo-auth-session';
+import * as AppleAuthentication from 'expo-apple-authentication';
 
 // Define the URL explicitly since we have it
 const supabaseUrl = 'https://krichcbjihlbkbupyqwn.supabase.co';
@@ -62,33 +62,70 @@ export const getCurrentUser = async () => {
   return { user, error };
 };
 
-// Add Google sign in function
+// Update the Google sign in function for better OAuth handling
 export const signInWithGoogle = async () => {
-  const redirectUrl = makeRedirectUri({
-    path: 'auth/callback',
-  });
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
-    options: {
-      redirectTo: redirectUrl,
-      queryParams: {
-        access_type: 'offline',
-        prompt: 'consent',
+  try {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        skipBrowserRedirect: true,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
       },
-    },
-  });
+    });
 
-  if (data?.url) {
-    const result = await WebBrowser.openAuthSessionAsync(data.url, redirectUrl);
-    if (result.type === 'success') {
-      const { url } = result;
-      await supabase.auth.setSession({
-        access_token: url.split('access_token=')[1].split('&')[0],
-        refresh_token: url.split('refresh_token=')[1].split('&')[0],
-      });
+    if (error) throw error;
+
+    if (data?.url) {
+      const result = await WebBrowser.openAuthSessionAsync(data.url);
+
+      if (result.type === 'success') {
+        // The user was successfully logged in
+        const { session } = await supabase.auth.getSession();
+        if (!session) {
+          throw new Error('No session after successful login');
+        }
+        return { error: null };
+      }
     }
-  }
 
-  return { error };
+    throw new Error('Failed to sign in with Google');
+  } catch (error) {
+    console.error('Google sign in error:', error);
+    return { error };
+  }
+};
+
+// Update Apple sign in to handle errors better
+export const signInWithApple = async () => {
+  try {
+    const credential = await AppleAuthentication.signInAsync({
+      requestedScopes: [
+        AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+        AppleAuthentication.AppleAuthenticationScope.EMAIL,
+      ],
+    });
+
+    if (!credential.identityToken) {
+      throw new Error('No identity token returned from Apple Sign In');
+    }
+
+    const { data, error } = await supabase.auth.signInWithIdToken({
+      provider: 'apple',
+      token: credential.identityToken,
+      nonce: credential.nonce, // Add this line for better security
+    });
+
+    if (error) throw error;
+    return { data, error: null };
+  } catch (error) {
+    if (error.code === 'ERR_CANCELED') {
+      // User canceled the sign-in flow
+      return { error: new Error('Sign in canceled') };
+    }
+    console.error('Apple sign in error:', error);
+    return { error };
+  }
 };
