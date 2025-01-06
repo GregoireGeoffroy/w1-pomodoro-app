@@ -277,7 +277,7 @@ export default function SettingsScreen() {
                 onPress={resetToDefaults}
               >
                 <Text className="text-white text-center font-medium">
-                  Reset to Defaults
+                  Reset All Settings to Defaults
                 </Text>
               </Pressable>
             </View>
