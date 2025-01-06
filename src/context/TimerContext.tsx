@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useColorScheme } from 'react-native';
-import { SoundOption } from '@/config/sounds';
+import { SoundOption, initializeAudio } from '@/config/sounds';
 
 const DEV_MODE = true;
 
@@ -66,6 +66,17 @@ export function TimerProvider({ children }: { children: React.ReactNode }): JSX.
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
   const colorScheme = useColorScheme();
   const isDark = colorScheme === 'dark';
+
+  useEffect(() => {
+    const setupAudio = async () => {
+      const isAudioInitialized = await initializeAudio();
+      if (!isAudioInitialized) {
+        console.warn('Audio initialization failed');
+      }
+    };
+
+    setupAudio();
+  }, []);
 
   const contextValue = {
     settings,
