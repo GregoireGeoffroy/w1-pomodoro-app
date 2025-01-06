@@ -45,8 +45,8 @@
 1. **Audio & Haptic Feedback:** ⬜️
    - [x] Basic sound on timer completion
    - [x] Basic haptic feedback
-   - [ ] Multiple sound options
-   - [ ] Sound preview in settings
+   - [x] Multiple sound options
+   - [x] Sound preview in settings
    - [ ] Volume control
 
 2. **Additional Features:** ⬜️
@@ -82,15 +82,13 @@
     - [ ] Background sync
 
 1. **Sound System Setup:** 🔄
-   - [x] Basic sound implementation
-   - [x] Multiple sound options
-   - [ ] Add free sound files:
-     - bell.mp3
-     - digital.mp3
-     - chime.mp3
-     - marimba.mp3
-   - [ ] Sound preview in settings
+   - [✓] Basic sound implementation
+   - [✓] Multiple sound options ('Gentle Alarm', 'Classic Bell')
+   - [✓] Sound preview in settings with play button
+   - [✓] Sound selection persistence
    - [ ] Error handling for sound loading
+   - [ ] Volume control implementation
+   - [ ] Background audio support
 
 2. **Haptic Feedback Enhancement:** 🔄
    - [x] Basic vibration

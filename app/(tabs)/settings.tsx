@@ -10,6 +10,10 @@ import { useRouter } from 'expo-router';
 import GoogleIcon from '@/assets/icons/GoogleIcon';
 import { ThemeSelector } from '@/components/ThemeSelector';
 import { useThemeColors } from '@/hooks/useThemeColors';
+import { Audio } from 'expo-av';
+import { useState } from 'react';
+import { SOUNDS, type SoundOption } from '@/config/sounds';
+import { Ionicons } from '@expo/vector-icons';
 
 interface DurationSettingProps {
   label: string;
@@ -58,6 +62,73 @@ function ToggleSetting({ label, value, onValueChange }: {
         value={value}
         onValueChange={onValueChange}
       />
+    </View>
+  );
+}
+
+function SoundSelector({ 
+  selectedSound, 
+  onSoundChange 
+}: {
+  selectedSound: SoundOption;
+  onSoundChange: (sound: SoundOption) => void;
+}) {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [sound, setSound] = useState<Audio.Sound | null>(null);
+
+  const playSound = async (soundKey: SoundOption) => {
+    try {
+      // Stop any currently playing sound
+      if (sound) {
+        await sound.stopAsync();
+        await sound.unloadAsync();
+      }
+
+      // Load and play the new sound
+      const { sound: newSound } = await Audio.Sound.createAsync(SOUNDS[soundKey]);
+      setSound(newSound);
+      setIsPlaying(true);
+      await newSound.playAsync();
+      
+      // Handle sound completion
+      newSound.setOnPlaybackStatusUpdate(status => {
+        if (status.isLoaded && !status.isPlaying) {
+          setIsPlaying(false);
+        }
+      });
+    } catch (error) {
+      console.error('Error playing sound:', error);
+      setIsPlaying(false);
+    }
+  };
+
+  return (
+    <View className="space-y-4">
+      {Object.keys(SOUNDS).map((soundKey) => (
+        <View key={soundKey} className="flex-row items-center justify-between">
+          <Pressable
+            className="flex-1 flex-row items-center"
+            onPress={() => onSoundChange(soundKey as SoundOption)}
+          >
+            <View className={`w-4 h-4 rounded-full border-2 border-blue-500 mr-3 ${
+              selectedSound === soundKey ? 'bg-blue-500' : 'bg-transparent'
+            }`} />
+            <Text className="text-base dark:text-white">{soundKey}</Text>
+          </Pressable>
+          
+          <Pressable
+            className="p-2"
+            onPress={() => playSound(soundKey as SoundOption)}
+            disabled={isPlaying}
+          >
+            <Ionicons 
+              name="play-circle-outline" 
+              size={24} 
+              color={isPlaying ? '#9CA3AF' : '#3B82F6'} 
+            />
+          </Pressable>
+        </View>
+      ))}
     </View>
   );
 }
@@ -186,6 +257,18 @@ export default function SettingsScreen() {
                 )}
               </View>
             </View>
+
+            {settings.soundEnabled && (
+              <View className="mt-4">
+                <Text className="text-base font-medium mb-3 dark:text-white">
+                  Timer Sound
+                </Text>
+                <SoundSelector
+                  selectedSound={settings.soundChoice}
+                  onSoundChange={(sound) => updateSettings('soundChoice', sound)}
+                />
+              </View>
+            )}
 
             <View className="pt-4">
               <Pressable

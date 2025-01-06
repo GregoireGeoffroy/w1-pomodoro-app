@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState } from 'react';
 import { useColorScheme } from 'react-native';
+import { SoundOption } from '@/config/sounds';
 
 const DEV_MODE = true;
 
@@ -23,7 +24,7 @@ interface TimerSettings {
   vibrationEnabled: boolean;
   vibrationDuration: number; // in milliseconds
   
-  soundChoice: string;
+  soundChoice: SoundOption;
 }
 
 const DEFAULT_SETTINGS: TimerSettings = {
@@ -46,7 +47,7 @@ const DEFAULT_SETTINGS: TimerSettings = {
   vibrationEnabled: true,
   vibrationDuration: 10000, // 10 seconds in milliseconds
   
-  soundChoice: 'bell',
+  soundChoice: 'Gentle Alarm',
 };
 
 const TimerContext = createContext<{
