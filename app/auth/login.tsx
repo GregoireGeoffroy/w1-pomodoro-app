@@ -1,8 +1,8 @@
 import { View, Text, TextInput, TouchableOpacity, Platform, Alert, ActivityIndicator } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { router } from 'expo-router';
-import { signInWithGoogle, signInWithApple } from '@/utils/supabase';
+import { signInWithGoogle, signInWithApple, configureGoogleSignIn } from '@/utils/supabase';
 import GoogleIcon from '@/assets/icons/GoogleIcon';
 import * as AppleAuthentication from 'expo-apple-authentication';
 import { supabase } from '@/utils/supabase';
@@ -23,6 +23,10 @@ export default function LoginScreen() {
   const [isAppleLoading, setIsAppleLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { signIn } = useAuth();
+
+  useEffect(() => {
+    configureGoogleSignIn();
+  }, []);
 
   const handleLogin = async () => {
     try {

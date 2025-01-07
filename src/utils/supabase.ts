@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
 import * as WebBrowser from 'expo-web-browser';
 import * as AppleAuthentication from 'expo-apple-authentication';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 // Define the URL explicitly since we have it
 const supabaseUrl = 'https://krichcbjihlbkbupyqwn.supabase.co';
@@ -62,41 +63,31 @@ export const getCurrentUser = async () => {
   return { user, error };
 };
 
+// Add this configuration function
+export const configureGoogleSignIn = () => {
+  GoogleSignin.configure({
+    webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
+    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+  });
+};
+
 // Update the Google sign in function
 export const signInWithGoogle = async () => {
   try {
-    const redirectUrl = 'timelyflow://';  // Updated scheme
+    await GoogleSignin.hasPlayServices();
+    const userInfo = await GoogleSignin.signIn();
     
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    if (!userInfo.idToken) {
+      throw new Error('No ID token present');
+    }
+
+    const { data, error } = await supabase.auth.signInWithIdToken({
       provider: 'google',
-      options: {
-        skipBrowserRedirect: true,
-        redirectTo: redirectUrl,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
-        },
-      },
+      token: userInfo.idToken,
     });
 
     if (error) throw error;
-
-    if (data?.url) {
-      const result = await WebBrowser.openAuthSessionAsync(
-        data.url,
-        redirectUrl
-      );
-
-      if (result.type === 'success') {
-        const { data: sessionData } = await supabase.auth.getSession();
-        if (!sessionData.session) {
-          throw new Error('No session after successful login');
-        }
-        return { error: null };
-      }
-    }
-
-    throw new Error('Failed to sign in with Google');
+    return { data, error: null };
   } catch (error) {
     console.error('Google sign in error:', error);
     return { error };
