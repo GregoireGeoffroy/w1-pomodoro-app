@@ -65,10 +65,13 @@ export const getCurrentUser = async () => {
 // Update the Google sign in function
 export const signInWithGoogle = async () => {
   try {
+    const redirectUrl = 'timelyflow://';  // Updated scheme
+    
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
         skipBrowserRedirect: true,
+        redirectTo: redirectUrl,
         queryParams: {
           access_type: 'offline',
           prompt: 'consent',
@@ -79,10 +82,12 @@ export const signInWithGoogle = async () => {
     if (error) throw error;
 
     if (data?.url) {
-      const result = await WebBrowser.openAuthSessionAsync(data.url);
+      const result = await WebBrowser.openAuthSessionAsync(
+        data.url,
+        redirectUrl
+      );
 
       if (result.type === 'success') {
-        // The user was successfully logged in
         const { data: sessionData } = await supabase.auth.getSession();
         if (!sessionData.session) {
           throw new Error('No session after successful login');

@@ -1,11 +1,11 @@
 module.exports = {
   expo: {
-    name: 'pomodoro-app',
-    slug: 'pomodoro-app',
+    name: 'timeflow',
+    slug: 'timeflow',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/images/icon.png',
-    scheme: 'pomodoro-app',
+    scheme: 'timeflow',
     userInterfaceStyle: 'automatic',
     splash: {
       image: './assets/images/splash.png',
@@ -15,14 +15,14 @@ module.exports = {
     assetBundlePatterns: ['**/*'],
     ios: {
       supportsTablet: true,
-      bundleIdentifier: 'com.yourcompany.pomodoroapp'
+      bundleIdentifier: 'com.gregoiregeoffroy.timeflow'
     },
     android: {
       adaptiveIcon: {
         foregroundImage: './assets/images/adaptive-icon.png',
         backgroundColor: '#ffffff'
       },
-      package: 'com.yourcompany.pomodoroapp'
+        package: 'com.gregoiregeoffroy.timeflow'
     },
     web: {
       favicon: './assets/images/favicon.png'

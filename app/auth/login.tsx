@@ -5,6 +5,7 @@ import { router } from 'expo-router';
 import { signInWithGoogle, signInWithApple } from '@/utils/supabase';
 import GoogleIcon from '@/assets/icons/GoogleIcon';
 import * as AppleAuthentication from 'expo-apple-authentication';
+import { supabase } from '@/utils/supabase';
 
 const handleAuthError = (error: Error, provider: string) => {
   Alert.alert(
@@ -33,6 +34,28 @@ export default function LoginScreen() {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
+    setIsGoogleLoading(true);
+    try {
+      console.log('Starting Google sign-in...');
+      const { error } = await signInWithGoogle();
+      if (error) {
+        console.error('Google sign-in error:', error);
+        throw error;
+      }
+      // Check if we have a session
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError) throw sessionError;
+      if (session) {
+        router.replace('/(tabs)');
+      }
+    } catch (error) {
+      handleAuthError(error as Error, 'Google');
+    } finally {
+      setIsGoogleLoading(false);
     }
   };
 
@@ -90,17 +113,7 @@ export default function LoginScreen() {
 
           <TouchableOpacity
             className="w-full h-12 rounded-lg border border-gray-300 dark:border-gray-700 flex-row items-center justify-center space-x-2 bg-white dark:bg-gray-800"
-            onPress={async () => {
-              setIsGoogleLoading(true);
-              try {
-                const { error } = await signInWithGoogle();
-                if (error) throw error;
-              } catch (error) {
-                handleAuthError(error as Error, 'Google');
-              } finally {
-                setIsGoogleLoading(false);
-              }
-            }}
+            onPress={handleGoogleSignIn}
             disabled={isGoogleLoading}
           >
             <GoogleIcon />

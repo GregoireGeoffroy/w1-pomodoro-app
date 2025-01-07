@@ -29,14 +29,20 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>pomodoro</string>
-          <string>com.gregoiregeoffroy.pomodoroapp</string>
+          <string>timelyflow</string>
+          <string>com.gregoiregeoffroy.TimelyFlow</string>
         </array>
       </dict>
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
           <string>exp+pomodoro-app</string>
+        </array>
+      </dict>
+      <dict>
+        <key>CFBundleURLSchemes</key>
+        <array>
+          <string>com.googleusercontent.apps.859298198162-om6f09vjrpb66kaibalh3k63jae65mgc</string>
         </array>
       </dict>
     </array>
