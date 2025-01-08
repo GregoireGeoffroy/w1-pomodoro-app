@@ -28,7 +28,7 @@
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="timelyflow"/>
         <data android:scheme="com.gregoiregeoffroy.TimelyFlow"/>
-        <data android:scheme="exp+pomodoro-app"/>
+        <data android:scheme="exp+timelyflow"/>
       </intent-filter>
     </activity>
   </application>

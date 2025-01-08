@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "pomodoro-app",
+    "name": "TimelyFlow",
     "slug": "pomodoro-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -46,7 +46,11 @@
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone."
         }
       ],
-      ["expo-apple-authentication"]
+      ["expo-apple-authentication"],
+      ["@react-native-google-signin/google-signin",
+      { 
+        "iosUrlScheme": "com.googleusercontent.apps.859298198162-achkgpplpfrk886pdr7vibg9h3ntgfne"
+      }]
     ],
     "experiments": {
       "typedRoutes": true

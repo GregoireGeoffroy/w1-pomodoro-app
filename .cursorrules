@@ -27,6 +27,7 @@ A React Native Pomodoro Timer app, built using Expo, designed to help users boos
 - Expo Haptics
 - Expo Vector Icons
 - Expo Tabs
+- Supabase
 
 ## Package Installation
 - Use `npx expo install` for installing packages to ensure Expo compatibility

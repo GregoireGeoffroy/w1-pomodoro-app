@@ -3,7 +3,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
 import * as WebBrowser from 'expo-web-browser';
 import * as AppleAuthentication from 'expo-apple-authentication';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { Platform } from 'react-native';
 
 // Define the URL explicitly since we have it
 const supabaseUrl = 'https://krichcbjihlbkbupyqwn.supabase.co';
@@ -63,22 +64,36 @@ export const getCurrentUser = async () => {
   return { user, error };
 };
 
-// Add this configuration function
-export const configureGoogleSignIn = () => {
+// Remove the top-level configuration and make it a function
+export const initializeGoogleSignIn = () => {
+  if (!process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID) {
+    throw new Error('Missing EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID');
+  }
+
   GoogleSignin.configure({
     webClientId: process.env.EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID,
-    iosClientId: process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID,
+    iosClientId: Platform.OS === 'ios' ? process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID : undefined,
+    offlineAccess: true,
   });
 };
 
-// Update the Google sign in function
+// Simplify the sign in function
 export const signInWithGoogle = async () => {
   try {
-    await GoogleSignin.hasPlayServices();
-    const userInfo = await GoogleSignin.signIn();
+    console.log('Starting Google sign in process...');
     
+    // Initialize Google Sign In
+    initializeGoogleSignIn();
+    
+    if (Platform.OS !== 'web') {
+      await GoogleSignin.hasPlayServices();
+    }
+
+    const userInfo = await GoogleSignin.signIn();
+    console.log('Google Sign In successful:', userInfo);
+
     if (!userInfo.idToken) {
-      throw new Error('No ID token present');
+      throw new Error('No ID token present in Google sign in response');
     }
 
     const { data, error } = await supabase.auth.signInWithIdToken({
@@ -88,9 +103,18 @@ export const signInWithGoogle = async () => {
 
     if (error) throw error;
     return { data, error: null };
-  } catch (error) {
-    console.error('Google sign in error:', error);
-    return { error };
+
+  } catch (error: any) {
+    console.error('Google sign in error:', {
+      error,
+      code: error.code,
+      message: error.message,
+      stack: error.stack
+    });
+    return { 
+      data: null, 
+      error: error instanceof Error ? error : new Error('Unknown error occurred') 
+    };
   }
 };
 

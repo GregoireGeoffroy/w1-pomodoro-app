@@ -2,11 +2,11 @@ import { ExpoConfig, ConfigContext } from 'expo/config';
 
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
-  name: config.name || "timeflow",
-  slug: config.slug || "timeflow",
+  name: config.name || "TimelyFlow",
+  slug: config.slug || "timelyflow",
   ios: {
     supportsTablet: true,
-    bundleIdentifier: "com.gregoiregeoffroy.timeflow",
+    bundleIdentifier: "com.gregoiregeoffroy.TimelyFlow",
     infoPlist: {
       NSMicrophoneUsageDescription: "This app needs access to microphone to play audio notifications.",
       NSCameraUsageDescription: "This app needs access to camera.",

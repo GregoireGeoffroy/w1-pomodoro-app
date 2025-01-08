@@ -1,11 +1,11 @@
 module.exports = {
   expo: {
-    name: 'timeflow',
-    slug: 'timeflow',
+    name: 'TimelyFlow',
+    slug: 'timelyflow',
     version: '1.0.0',
     orientation: 'portrait',
     icon: './assets/images/icon.png',
-    scheme: 'timeflow',
+    scheme: 'timelyflow',
     userInterfaceStyle: 'automatic',
     splash: {
       image: './assets/images/splash.png',
@@ -15,14 +15,19 @@ module.exports = {
     assetBundlePatterns: ['**/*'],
     ios: {
       supportsTablet: true,
-      bundleIdentifier: 'com.gregoiregeoffroy.timeflow'
+      bundleIdentifier: 'com.gregoiregeoffroy.TimelyFlow',
+      config: {
+        googleSignIn: {
+          reservedClientId: `com.googleusercontent.apps.${process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID}`
+        }
+      }
     },
     android: {
       adaptiveIcon: {
         foregroundImage: './assets/images/adaptive-icon.png',
         backgroundColor: '#ffffff'
       },
-        package: 'com.gregoiregeoffroy.timeflow'
+        package: 'com.gregoiregeoffroy.TimelyFlow'
     },
     web: {
       favicon: './assets/images/favicon.png'
@@ -39,7 +44,8 @@ module.exports = {
       [
         "@react-native-google-signin/google-signin",
         {
-          iosUrlScheme: `com.googleusercontent.apps.${process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID}`
+          iosUrlScheme: `com.googleusercontent.apps.${process.env.EXPO_PUBLIC_GOOGLE_IOS_CLIENT_ID}`,
+          googleServicesFile: "./google-services.json"
         }
       ]
     ]

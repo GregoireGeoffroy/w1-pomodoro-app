@@ -9,7 +9,7 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>$(DEVELOPMENT_LANGUAGE)</string>
     <key>CFBundleDisplayName</key>
-    <string>pomodoro-app</string>
+    <string>TimelyFlow</string>
     <key>CFBundleExecutable</key>
     <string>$(EXECUTABLE_NAME)</string>
     <key>CFBundleIdentifier</key>
@@ -30,13 +30,13 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>timelyflow</string>
-          <string>com.gregoiregeoffroy.timeflow</string>
+          <string>com.gregoiregeoffroy.TimelyFlow</string>
         </array>
       </dict>
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>exp+pomodoro-app</string>
+          <string>exp+timelyflow</string>
         </array>
       </dict>
     </array>

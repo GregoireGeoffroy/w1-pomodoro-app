@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "pomodoroapp.app"
-               BlueprintName = "pomodoroapp"
-               ReferencedContainer = "container:pomodoroapp.xcodeproj">
+               BuildableName = "TimelyFlow.app"
+               BlueprintName = "TimelyFlow"
+               ReferencedContainer = "container:TimelyFlow.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "pomodoroappTests.xctest"
-               BlueprintName = "pomodoroappTests"
-               ReferencedContainer = "container:pomodoroapp.xcodeproj">
+               BuildableName = "TimelyFlowTests.xctest"
+               BlueprintName = "TimelyFlowTests"
+               ReferencedContainer = "container:TimelyFlow.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "pomodoroapp.app"
-            BlueprintName = "pomodoroapp"
-            ReferencedContainer = "container:pomodoroapp.xcodeproj">
+            BuildableName = "TimelyFlow.app"
+            BlueprintName = "TimelyFlow"
+            ReferencedContainer = "container:TimelyFlow.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "pomodoroapp.app"
-            BlueprintName = "pomodoroapp"
-            ReferencedContainer = "container:pomodoroapp.xcodeproj">
+            BuildableName = "TimelyFlow.app"
+            BlueprintName = "TimelyFlow"
+            ReferencedContainer = "container:TimelyFlow.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

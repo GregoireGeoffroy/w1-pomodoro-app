@@ -25,7 +25,14 @@ export default function LoginScreen() {
   const { signIn } = useAuth();
 
   useEffect(() => {
-    configureGoogleSignIn();
+    try {
+      if (Platform.OS !== 'web') {
+        initializeGoogleSignIn();
+        console.log('Google Sign In initialized');
+      }
+    } catch (error) {
+      console.error('Failed to initialize Google Sign In:', error);
+    }
   }, []);
 
   const handleLogin = async () => {
@@ -44,13 +51,9 @@ export default function LoginScreen() {
   const handleGoogleSignIn = async () => {
     setIsGoogleLoading(true);
     try {
-      console.log('Starting Google sign-in...');
       const { error } = await signInWithGoogle();
-      if (error) {
-        console.error('Google sign-in error:', error);
-        throw error;
-      }
-      // Check if we have a session
+      if (error) throw error;
+
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       if (sessionError) throw sessionError;
       if (session) {
