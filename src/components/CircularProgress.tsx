@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleProp, TextStyle } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
 import { useThemeColors } from '@/hooks/useThemeColors';
 
@@ -9,6 +9,7 @@ interface CircularProgressProps {
   color: string;
   size?: number;
   strokeWidth?: number;
+  timeStyle?: StyleProp<TextStyle>;
 }
 
 export function CircularProgress({
@@ -17,12 +18,20 @@ export function CircularProgress({
   color,
   size = 280,
   strokeWidth = 12,
+  timeStyle,
 }: CircularProgressProps) {
   const colors = useThemeColors();
   const center = size / 2;
   const radius = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const progressStroke = ((100 - progress) / 100) * circumference;
+
+  const defaultTimeStyle: StyleProp<TextStyle> = {
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: colors.text,
+    textAlign: 'center',
+  };
 
   return (
     <View className="items-center justify-center">
@@ -52,12 +61,7 @@ export function CircularProgress({
       </Svg>
       <View className="absolute">
         <Text
-          style={{
-            fontSize: 48,
-            fontWeight: 'bold',
-            color: colors.text,
-            textAlign: 'center',
-          }}
+          style={[defaultTimeStyle, timeStyle]}
         >
           {time}
         </Text>

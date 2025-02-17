@@ -3,9 +3,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { useColorScheme } from 'nativewind'
 import { LineChart, BarChart } from 'react-native-chart-kit'
 import { useStatistics } from '@/context/StatisticsContext'
-import { useState, useEffect } from 'react'
-import { useAuth } from '@/context/AuthContext'
-import { router } from 'expo-router'
+import { useState } from 'react'
 import { useThemeColors } from '@/hooks/useThemeColors'
 
 export default function Statistics() {
@@ -14,17 +12,6 @@ export default function Statistics() {
   const colors = useThemeColors()
   const screenWidth = Dimensions.get('window').width
   const [timeframe, setTimeframe] = useState<'week' | 'month'>('week')
-  const { session } = useAuth()
-
-  useEffect(() => {
-    if (!session) {
-      router.push('/auth/login')
-    }
-  }, [session])
-
-  if (!session) {
-    return null // or return a loading screen
-  }
 
   // Get last 7 days or 30 days of data
   const getDaysArray = (numDays: number) => {

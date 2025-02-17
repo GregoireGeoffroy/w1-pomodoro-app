@@ -1,13 +1,8 @@
 import { Switch } from 'react-native';
 import Slider from '@react-native-community/slider';
-import { View, Text, ScrollView, Pressable, TouchableOpacity } from 'react-native';
-import { BlurView } from 'expo-blur';
+import { View, Text, ScrollView, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTimerSettings } from '@/context/TimerContext';
-import { useAuth } from '@/context/AuthContext';
-import { signInWithGoogle } from '@/utils/supabase';
-import { useRouter } from 'expo-router';
-import GoogleIcon from '@/assets/icons/GoogleIcon';
 import { ThemeSelector } from '@/components/ThemeSelector';
 import { useThemeColors } from '@/hooks/useThemeColors';
 import { Audio } from 'expo-av';

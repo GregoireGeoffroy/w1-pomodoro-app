@@ -34,12 +34,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <Ionicons name="settings-outline" size={28} color={color} />,
         }}
       />
-      <Tabs.Screen
-        name="account"
-        options={{
-          tabBarIcon: ({ color }) => <Ionicons name="person-outline" size={28} color={color} />,
-        }}
-      />
     </Tabs>
   );
 } 

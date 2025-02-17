@@ -6,6 +6,9 @@ export interface ThemeColors {
   text: string;
   surface: string;
   accent: string;
+  primary: string;
+  secondary: string;
+  tertiary: string;
 }
 
 export interface Theme {
