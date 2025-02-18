@@ -39,7 +39,7 @@ export default function TimerScreen() {
               progress={progress}
               time={formatTime(timeLeft)}
               color={getTimerColor()}
-              strokeWidth={3}
+              strokeWidth={6}
               timeStyle={{ 
                 fontSize: 60,
                 fontWeight: '300',

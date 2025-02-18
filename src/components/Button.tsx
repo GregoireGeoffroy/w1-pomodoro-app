@@ -35,7 +35,7 @@ export function Button({ onPress, variant, label, style }: ButtonProps) {
       <Text
         className="text-base font-semibold text-center"
         style={{
-          color: variant === 'primary' ? colors.text : colors.primary
+          color: variant === 'primary' ? 'white' : colors.primary
         }}
       >
         {label}
