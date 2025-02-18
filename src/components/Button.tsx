@@ -1,33 +1,42 @@
 import React from 'react';
 import { Pressable, Text, StyleProp, ViewStyle } from 'react-native';
+import { useThemeColors } from '@/hooks/useThemeColors';
 
 interface ButtonProps {
   onPress: () => void;
-  variant: 'primary' | 'secondary' | 'tertiary';
+  variant: 'primary' | 'secondary';
   label: string;
   style?: StyleProp<ViewStyle>;
 }
 
 export function Button({ onPress, variant, label, style }: ButtonProps) {
+  const colors = useThemeColors();
+  
   return (
     <Pressable
       onPress={onPress}
       className={`
-        py-3 rounded-2xl border-[1.5px] mb-3
-        ${variant === 'primary' 
-          ? 'bg-primary border-primary' 
-          : 'bg-transparent border-primary'}
+        py-3 
+        rounded-3xl 
+        border-[1.5px] 
+        mb-3 
+        w-[150px] 
+        items-center
+        active:opacity-80
       `}
-      style={({ pressed }) => [
-        { opacity: pressed ? 0.8 : 1 },
+      style={[
+        {
+          backgroundColor: variant === 'primary' ? colors.primary : 'transparent',
+          borderColor: variant === 'primary' ? colors.primary : colors.primary
+        },
         style
       ]}
     >
       <Text
-        className={`
-          text-base font-semibold text-center
-          ${variant === 'primary' ? 'text-white' : 'text-primary'}
-        `}
+        className="text-base font-semibold text-center"
+        style={{
+          color: variant === 'primary' ? colors.text : colors.primary
+        }}
       >
         {label}
       </Text>

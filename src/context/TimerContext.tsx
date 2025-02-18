@@ -29,9 +29,9 @@ interface TimerSettings {
 
 const DEFAULT_SETTINGS: TimerSettings = {
   // Durations
-  workDuration: DEV_MODE ? 5/60 : 25,
-  breakDuration: DEV_MODE ? 2/60 : 5,
-  longBreakDuration: DEV_MODE ? 3/60 : 15,
+  workDuration: DEV_MODE ? 10/60 : 25,
+  breakDuration: DEV_MODE ? 10/60 : 5,
+  longBreakDuration: DEV_MODE ? 10/60 : 15,
   pomosUntilLongBreak: 4,
   
   // Auto Start Options

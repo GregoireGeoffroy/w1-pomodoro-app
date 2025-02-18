@@ -61,7 +61,7 @@ export default function TimerScreen() {
           </View>
         </View>
 
-        <View className="mt-8 items-center">
+        <View className="mt-8 h-32 items-center">
           {!isRunning && timeLeft === (mode === 'work' ? settings.workDuration * 60 : getBreakDuration() * 60) && (
             <Button
               onPress={() => setIsRunning(true)}
@@ -85,18 +85,20 @@ export default function TimerScreen() {
                 variant="primary"
                 label="Continue"
               />
-              <Button
-                onPress={() => {
-                  setTimeLeft(mode === 'work' ? settings.workDuration * 60 : getBreakDuration() * 60);
-                  setProgress(0);
-                }}
-                variant="secondary"
-                label="End"
-              />
+              {mode === 'work' && (
+                <Button
+                  onPress={() => {
+                    setTimeLeft(mode === 'work' ? settings.workDuration * 60 : getBreakDuration() * 60);
+                    setProgress(0);
+                  }}
+                  variant="secondary"
+                  label="End"
+                />
+              )}
             </>
           )}
 
-          {mode === 'break' && (
+          {mode === 'break' && !isRunning && (
             <Button
               onPress={() => {
                 toggleMode();
@@ -108,7 +110,10 @@ export default function TimerScreen() {
           )}
         </View>
 
-        <TimerStats sessions={sessions} workDuration={settings.workDuration} />
+        <View className="absolute bottom-8">
+          <TimerStats sessions={sessions} workDuration={settings.workDuration} />
+        </View>
+
       </SafeAreaView>
     </View>
   );
