@@ -110,7 +110,7 @@ export default function TimerScreen() {
           )}
         </View>
 
-        <View className="absolute bottom-8">
+        <View className="absolute bottom-16">
           <TimerStats sessions={sessions} workDuration={settings.workDuration} />
         </View>
 

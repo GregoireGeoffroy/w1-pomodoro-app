@@ -17,17 +17,6 @@ async function requestAudioPermissions() {
 
 async function initializeAudio() {
   try {
-    const hasPermission = await requestAudioPermissions();
-    
-    if (!hasPermission) {
-      Alert.alert(
-        'Permission Required',
-        'This app needs microphone permission to play sounds.',
-        [{ text: 'OK' }]
-      );
-      return false;
-    }
-
     await Audio.setAudioModeAsync({
       playsInSilentModeIOS: true,
       staysActiveInBackground: true,

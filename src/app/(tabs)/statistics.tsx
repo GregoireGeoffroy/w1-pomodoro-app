@@ -76,12 +76,14 @@ export default function Statistics() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <SafeAreaView className="flex-1">
-        <ScrollView className="flex-1 px-4">
-          <View className="py-4">
-            <Text className="text-2xl font-bold text-gray-900 dark:text-white">
-              Statistics
-            </Text>
-          </View>
+        <ScrollView 
+          className="flex-1 p-6"
+          style={{ backgroundColor: colors.background }}>
+          <Text 
+            className="text-2xl font-bold mb-6"
+            style={{ color: colors.text }}>
+            Statistics
+          </Text>
 
           <StatCard title="Today" stats={todayStats} />
           <StatCard title="Yesterday" stats={yesterdayStats} />

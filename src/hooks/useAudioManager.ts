@@ -8,11 +8,6 @@ export function useAudioManager() {
   const [soundLoadingError, setSoundLoadingError] = useState<string>('');
 
   const setupAudio = useCallback(async () => {
-    const permission = await Audio.requestPermissionsAsync();
-    if (!permission.granted) {
-      throw new Error('Audio permissions not granted');
-    }
-    
     await Audio.setAudioModeAsync({
       playsInSilentModeIOS: true,
       staysActiveInBackground: true,

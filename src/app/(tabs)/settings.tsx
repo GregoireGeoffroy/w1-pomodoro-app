@@ -20,8 +20,15 @@ interface DurationSettingProps {
 }
 
 function DurationSetting({ label, value, onValueChange, min, max, step = 5 }: DurationSettingProps) {
-  const displayValue = Math.round(value / step) * step;
+  const [localValue, setLocalValue] = useState(value);
+  const displayValue = Math.round(localValue / step) * step;
   
+  const handleSlidingComplete = (finalValue: number) => {
+    const roundedValue = Math.round(finalValue / step) * step;
+    setLocalValue(roundedValue);
+    onValueChange(roundedValue);
+  };
+
   return (
     <View className="mb-6">
       <View className="flex-row justify-between mb-2">
@@ -32,8 +39,9 @@ function DurationSetting({ label, value, onValueChange, min, max, step = 5 }: Du
         minimumValue={min}
         maximumValue={max}
         step={step}
-        value={value}
-        onValueChange={onValueChange}
+        value={localValue}
+        onValueChange={setLocalValue}
+        onSlidingComplete={handleSlidingComplete}
         minimumTrackTintColor="#3B82F6"
         maximumTrackTintColor="#9CA3AF"
       />
@@ -140,8 +148,7 @@ export default function SettingsScreen() {
           style={{ backgroundColor: colors.background }}>
           <Text 
             className="text-2xl font-bold mb-6"
-            style={{ color: colors.text }}
-          >
+            style={{ color: colors.text }}>
             Timer Settings
           </Text>
           
@@ -201,12 +208,12 @@ export default function SettingsScreen() {
               <Text className="text-lg font-semibold mb-3 dark:text-white">Auto Start</Text>
               <View className="space-y-4">
                 <ToggleSetting
-                  label="Auto Start  Pomo"
+                  label="Auto Start of Next Pomo"
                   value={settings.autoStartPomodoro}
                   onValueChange={(value) => updateSettings('autoStartPomodoro', value)}
                 />
                 <ToggleSetting
-                  label="Auto Start Break"
+                  label="Auto Start of Break"
                   value={settings.autoStartBreak}
                   onValueChange={(value) => updateSettings('autoStartBreak', value)}
                 />
@@ -217,53 +224,51 @@ export default function SettingsScreen() {
               <Text className="text-lg font-semibold mb-3 dark:text-white">Sound & Haptics</Text>
               <View className="space-y-4">
                 <ToggleSetting
-                  label="Sound"
-                  value={settings.soundEnabled}
-                  onValueChange={(value) => updateSettings('soundEnabled', value)}
-                />
-                <ToggleSetting
                   label="Vibration"
                   value={settings.vibrationEnabled}
                   onValueChange={(value) => updateSettings('vibrationEnabled', value)}
                 />
                 
-                {settings.vibrationEnabled && (
-                  <View>
-                    <View className="flex-row justify-between mb-2">
-                      <Text className="text-base dark:text-white">Vibration Duration</Text>
-                      <Text className="text-base dark:text-white">
-                        {settings.vibrationDuration / 1000}s
-                      </Text>
-                    </View>
-                    <Slider
-                      minimumValue={0}
-                      maximumValue={20000}
-                      step={5000}
-                      value={settings.vibrationDuration}
-                      onValueChange={(value) => updateSettings('vibrationDuration', value)}
-                      minimumTrackTintColor="#3B82F6"
-                      maximumTrackTintColor="#9CA3AF"
-                    />
-                    <View className="flex-row justify-between mt-1">
-                      <Text className="text-sm text-gray-500 dark:text-gray-400">0s</Text>
-                      <Text className="text-sm text-gray-500 dark:text-gray-400">20s</Text>
-                    </View>
+                <View style={{ opacity: settings.vibrationEnabled ? 1 : 0.5 }}>
+                  <View className="flex-row justify-between mb-2">
+                    <Text className="text-base dark:text-white">Vibration Duration</Text>
+                    <Text className="text-base dark:text-white">
+                      {settings.vibrationDuration / 1000}s
+                    </Text>
                   </View>
-                )}
+                  <Slider
+                    minimumValue={0}
+                    maximumValue={20000}
+                    step={5000}
+                    value={settings.vibrationDuration}
+                    onValueChange={(value) => updateSettings('vibrationDuration', value)}
+                    minimumTrackTintColor="#3B82F6"
+                    maximumTrackTintColor="#9CA3AF"
+                    disabled={!settings.vibrationEnabled}
+                  />
+                  <View className="flex-row justify-between mt-1">
+                    <Text className="text-sm text-gray-500 dark:text-gray-400">0s</Text>
+                    <Text className="text-sm text-gray-500 dark:text-gray-400">20s</Text>
+                  </View>
+                </View>
+
+                <ToggleSetting
+                  label="Sound"
+                  value={settings.soundEnabled}
+                  onValueChange={(value) => updateSettings('soundEnabled', value)}
+                />
+                
+                <View style={{ opacity: settings.soundEnabled ? 1 : 0.5 }}>
+                  <Text className="text-base font-medium mb-3 dark:text-white">
+                    Timer Sound
+                  </Text>
+                  <SoundSelector
+                    selectedSound={settings.soundChoice}
+                    onSoundChange={(sound) => updateSettings('soundChoice', sound)}
+                  />
+                </View>
               </View>
             </View>
-
-            {settings.soundEnabled && (
-              <View className="mt-4">
-                <Text className="text-base font-medium mb-3 dark:text-white">
-                  Timer Sound
-                </Text>
-                <SoundSelector
-                  selectedSound={settings.soundChoice}
-                  onSoundChange={(sound) => updateSettings('soundChoice', sound)}
-                />
-              </View>
-            )}
 
             <View className="pt-4">
               <Pressable

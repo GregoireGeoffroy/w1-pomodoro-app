@@ -6,6 +6,7 @@ import '../../global.css';
 import { StatisticsProvider } from '@/context/StatisticsContext';
 import LoadingScreen from '@/components/LoadingScreen';
 import { ThemeProvider } from '@/context/ThemeContext';
+import { StatusBar } from 'expo-status-bar';
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
@@ -27,6 +28,7 @@ function RootLayoutNav() {
 export default function RootLayout() {
   return (
     <SafeAreaProvider>
+      <StatusBar style="auto" />
       <TimerProvider>
         <StatisticsProvider>
           <ThemeProvider>
